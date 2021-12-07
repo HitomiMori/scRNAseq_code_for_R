@@ -115,24 +115,18 @@ g5
 
 
 # Analysis_3
-######Finding differentially expressed features (cluster biomarkers)#########
-###If I need to check original RNA
+#Finding differentially expressed features (cluster biomarkers)#########
+#If I need to check original RNA
 DefaultAssay(PDX) <- "RNA"
 
 # find all markers of cluster X
 cluster0.markers <- FindMarkers(PDX, ident.1 = 0, min.pct = 0.25)
 head(cluster0.markers, n = 10)
 
-cluster5.markers <- FindMarkers(PDX, ident.1 = 5, min.pct = 0.25)
-head(cluster5.markers, n = 5)
-
-# find all markers distinguishing cluster 3 from clusters 5 and 6
-cluster3.markers <- FindMarkers(PDX, ident.1 = 3, ident.2 = c(5, 6), min.pct = 0.25)
-head(cluster3.markers, n = 5)
-
 # find markers for every cluster compared to all remaining cells, report only the positive ones
 #If I need to change >> @active.assay: chr "integrated" to "RNA"
 DefaultAssay(PDX) <- "RNA"
+
 #
 PDX.markers <- FindAllMarkers(PDX, min.pct = 0.25, logfc.threshold = 0.25)
 top10.PDX.markers <- PDX.markers %>% group_by(cluster) %>% top_n(10, avg_logFC)
@@ -148,6 +142,7 @@ write.csv(top10.PDX.markers, file = "top10_SC31_DEG_8_RNA.csv")
 write.csv(bottom10.PDX.markers, file = "bot20_SC31_DEG_8_RNA.csv")
 
 #In Cx_DEG_Placebo_vs_E2
+
 #GS3
 DefaultAssay(PDX) <- "RNA"
 Idents(PDX) <- "seurat_clusters"
@@ -181,7 +176,8 @@ DoHeatmap(PDX, features = top10.PDX.markers$gene) + NoLegend()
 +scale_fill_gradientn(colors = c("blue", "white", "red"))
 
 # Analysis_4
-#####UMAP_Pos&Neg plot####
+#UMAP_Pos&Neg plot
+
 Gene <- "IL24"
 
 sample.info <- data.frame(row.names = attr(PDX@active.ident, 'names'))
@@ -195,7 +191,8 @@ UMAPPlot(PDX, group.by="GENE", cols=c("lightgrey", "tomato"), pt.size = 0.1, spl
   ggtitle(Gene) 
 
 
-###Percentage(GENE_Pos/Neg)_cluster/treatment/cell_cycle_Bar_Graph
+#Percentage(GENE_Pos/Neg)_cluster/treatment/cell_cycle_Bar_Graph
+
 Gene <- "IL24"
 
 sample.info <- data.frame(row.names = attr(PDX@active.ident, 'names'))
@@ -231,9 +228,10 @@ g5
 
 
 # Analysis_5
-##########Percentage2_2genes_Combination########################
+#Percentage2_2genes_Combination
 
-###UMAP
+#UMAP
+
 Gene1 <- "IL24"
 sample.info <- data.frame(row.names = attr(PDX@active.ident, 'names'))
 indexGene <- match(Gene1, rownames(PDX@assays$RNA@counts))
@@ -256,7 +254,8 @@ UMAPPlot(PDX, group.by="GENE2")
 UMAPPlot(PDX, group.by="GENE2",cols = c("#d9d9d9", "#fb8072"))+ggtitle(Gene2) 
 UMAPPlot(PDX, group.by="GENE2",cols = c("#d9d9d9", "#fb8072"), split.by="orig.ident")+ggtitle(Gene1) 
 
-###Bar graph
+#Bar graph
+
 Gene1 <- "ESR1"
 Gene2 <- "IL24"
 
@@ -288,7 +287,8 @@ ggplot(data=stat, aes(x=Gene1, y=Frequency, fill=Gene2)) +
 xlab(Gene1)+
   scale_fill_brewer(palette="Dark2")
 
-###Percentage2_Bar_Graph_gene_Combination_###separated by treatment##### 
+#Percentage2_Bar_Graph_gene_Combination_###separated by treatment##### 
+
 ggplot(data=stat, aes(x=Gene1, y=Frequency, fill=Gene2)) +
   geom_bar(stat="identity")+
   theme_minimal()+
@@ -309,8 +309,8 @@ title <- paste(gene1, gene2, sep="_")
 write.csv(stat, paste(title, "_expression.csv", sep=""))  
 
 # Analysis_6
-#######################################
-###Cell cycle_by_gene
+#Cell cycle_by_gene
+
 Gene <- "IL24"
 
 sample.info <- data.frame(row.names = attr(PDX@active.ident, 'names'))
@@ -332,8 +332,9 @@ write.csv(stat, paste(Gene, "_cell_cycle.csv", sep=""))
 
 Idents(PDX) <- "seurat_clusters"
 
-#######################################
-###Cell cycle+DEG separated by treatment
+
+#Cell cycle+DEG separated by treatment
+
 Gene <- "ESR1"
 
 sample.info <- data.frame(row.names = attr(PDX@active.ident, 'names'))
@@ -354,8 +355,9 @@ ggplot(data=stat, aes(x=Expression, y=Frequency, fill=Phase)) +
 #cell_number
 write.csv(stat, paste(Gene, "_cell_cycle_by_treatment.csv", sep=""))
 
-#######################################
-###Cell_cycle_Bar_Graph
+
+#Cell_cycle_Bar_Graph
+
 stat <- as.data.frame(table(PDX@active.ident, PDX@meta.data$orig.ident, PDX@meta.data$Phase))
 colnames(stat) <- c("Cluster", "Treatment", "Cycle", "Frequency")
 
@@ -418,6 +420,7 @@ write.csv(stat, "CellCycle2.csv")
 # Analysis_7_DEG_Analysis
 
 #E2 vs Placebo
+
 Idents(PDX) <- "orig.ident"
 UMAPPlot(PDX, cols=c("#FF99FF", "#0066FF"))
 DEG_E2vsPlacebo <- FindAllMarkers(PDX, only.pos = T)
@@ -431,11 +434,13 @@ DEG_E2vsPlacebo <- merge(DEG_E2vsPlacebo, Exp)
 write.csv(DEG_E2vsPlacebo, "DEG_E2vsPlacebo.csv")
 
 #DEG_Separated_by_GENE
+
 Idents(PDX) <- "GENE"
 Marker <- FindAllMarkers(PDX, only.pos = T, min.pct = 0.25)
 write.csv(Marker, paste(Gene, "_DEG.csv", sep=""))
 
 #In ESR1+ cell_DEG_Placebo_vs_E2
+
 Idents(PDX) <- "GENE"
 sub <- subset(PDX, idents = "Pos") 
 UMAPPlot(sub,cols = "#d9d9d9")+ggtitle("ESR1+")
@@ -445,6 +450,7 @@ UMAPPlot(sub, cols=c("#0066FF", "#FF99FF"))+ggtitle(paste(Gene, "+_by_treatment"
 write.csv(Marker, paste(Gene, "+_vehicle_vs_E2.csv", sep=""))
 
 #In ESR1- cell_DEG_Placebo_vs_E2
+
 sub <- subset(PDX, idents = "Neg") 
 UMAPPlot(sub,cols = "#d9d9d9")+ggtitle("ESR1-")
 Idents(sub) <- "orig.ident"
@@ -453,6 +459,7 @@ UMAPPlot(sub, cols=c("#0066FF", "#FF99FF"))+ggtitle(paste(Gene, "-_by_treatment"
 write.csv(Marker, paste(Gene, "-_vehicle_vs_E2.csv", sep=""))
 
 #In Placebo_DEG_ESR1+_vs_ESR1-
+
 Idents(PDX) <- "orig.ident"
 sub <- subset(PDX, idents = "1-Placebo") 
 UMAPPlot(sub, cols = "#0066FF")+ggtitle("Placebo")
@@ -462,6 +469,7 @@ UMAPPlot(sub, cols=c("#fb8072","#d9d9d9"))+ggtitle("Placebo_ESR1+/-")
 write.csv(Marker, paste(Gene, "_DEG_in_Placebo.csv", sep=""))
 
 #In E2_DEG_ESR1+_vs_ESR1-
+
 sub <- subset(PDX, idents = "2-E2") 
 UMAPPlot(sub, cols="#FF99FF")+ggtitle("E2")
 Idents(sub) <- "GENE"
