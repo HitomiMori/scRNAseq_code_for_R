@@ -1,44 +1,41 @@
 # scRNAseq_code_for_R
 Single-cell analysis of ER+ breast cancer PDX models
 
-####Data and package loading
-
+# Data and package loading
 setwd("~/Documents/COH_2018-2020/SC31/SC31_scRNAseq_2020")
-
 setwd("~/Documents/COH_2018-2020/GS3_scRNA_2019_2020/GS3_intagration")
 
 library(Seurat)
 library(dplyr)
 library(ggplot2)
 
-#SC31
+# SC31
 data <- readRDS("scRNA_human_phase0.3.rds")
-
-#GS3 
+# GS3 
 data <- readRDS("GS3_integrated.rds")
 
 #
 PDX <- data
 remove(data)
 
-#without_integration
+# without_integration
 DefaultAssay(PDX) <- "RNA"
 
-#integration
+# integration
 DefaultAssay(PDX) <- "integrated"
 
-#reset
+# reset
 Idents(PDX) <- "seurat_clusters"
 
 
-#####_Number of cells including the data set
+# Number of cells including the data set
 stat <- as.data.frame(table(PDX@active.ident, PDX@meta.data$Phase, PDX@meta.data$orig.ident))
 colnames(stat) <- c("Cluster", "CellCycle", "Treatment", "CellNumber")
 write.csv(stat, "072219.csv")
 write.csv(stat, "SC31_05032021.csv")
 
 
-#####Analysis_1
+# Analysis_1
 UMAPPlot(PDX, pt.size=0.1)+ggtitle("Clusters")
 UMAPPlot(PDX, group.by="orig.ident",cols=c("#0066FF", "#FF99FF"), pt.size=0.1)+ggtitle("Treatment")
 UMAPPlot(PDX, group.by="Phase", pt.size=0.1)+ggtitle("Cell cycle")
@@ -47,13 +44,13 @@ UMAPPlot(PDX, pt.size=0.1, split.by="orig.ident")+ggtitle("Clusters")
 UMAPPlot(PDX, group.by="orig.ident",cols=c("#0066FF", "#FF99FF"), pt.size=0.1, split.by="orig.ident")+ggtitle("Treatment")
 UMAPPlot(PDX, group.by="Phase", pt.size=0.1, split.by="orig.ident")+ggtitle("Cell cycle")
 
-#######Analysis_2
+# Analysis_2
 ###Cell_Number
 stat <- as.data.frame(table(PDX@active.ident, PDX@meta.data$Phase, PDX@meta.data$orig.ident))
 colnames(stat) <- c("Cluster", "CellCycle", "Treatment", "CellNumber")
 write.csv(stat, "SC31_06082021_8Cluster.csv")
 
-###bar_Graph
+# bar_Graph
 stat <- as.data.frame(table(PDX@meta.data$Phase, PDX@meta.data$orig.ident))
 colnames(stat) <- c("Phase", "Treatment", "Frequency")
 
@@ -116,7 +113,7 @@ g5 <- ggplot(data=stat, aes(x=Cluster, y=Frequency, fill=Phase)) +
 g5
 
 
-#######Analysis_3
+# Analysis_3
 ######Finding differentially expressed features (cluster biomarkers)#########
 ###If I need to check original RNA
 DefaultAssay(PDX) <- "RNA"
@@ -172,7 +169,7 @@ Marker <- FindAllMarkers(sub, only.pos = T, min.pct = 0.25)
 UMAPPlot(sub, cols=c("#FF99FF" , "#0066FF"))+ggtitle(paste("C2", "by_treatment", sep="_"))
 write.csv(Marker, paste(7, "C7_placebo_vs_E2.csv", sep=""))
 
-#######Heat_Map
+# Heat_Map
 #No requested features found in the scale.data slot for the RNA assay.
 PDX <- ScaleData(object = PDX, features = rownames(PDX))
 #
@@ -182,8 +179,8 @@ DoHeatmap(PDX, features = top10.PDX.markers$gene) + NoLegend()
 +scale_fill_gradientn(colors = RColorBrewer::brewer.pal(n = 10, name = "RdBu"))
 +scale_fill_gradientn(colors = c("blue", "white", "red"))
 
-#####Analysis_4
-#####UMAP_Pos&Neg plot####################
+# Analysis_4
+#####UMAP_Pos&Neg plot####
 Gene <- "IL24"
 
 sample.info <- data.frame(row.names = attr(PDX@active.ident, 'names'))
@@ -232,7 +229,7 @@ g5 <- ggplot(data=stat, aes(x=Cluster, y=Frequency, fill=Expression)) +
 g5
 
 
-#######Analysis_5
+# Analysis_5
 ##########Percentage2_2genes_Combination########################
 
 ###UMAP
@@ -310,7 +307,7 @@ ggplot(data=stat, aes(x=Gene1, y=Frequency, fill=Gene2)) +
 title <- paste(gene1, gene2, sep="_")
 write.csv(stat, paste(title, "_expression.csv", sep=""))  
 
-#######Analysis_6
+# Analysis_6
 #######################################
 ###Cell cycle_by_gene
 Gene <- "IL24"
@@ -417,7 +414,7 @@ write.csv(stat, "CellCycle2.csv")
 
 
 #######################################
-#######Analysis_7_DEG_Analysis
+# Analysis_7_DEG_Analysis
 
 #E2 vs Placebo
 Idents(PDX) <- "orig.ident"
