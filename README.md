@@ -1,35 +1,45 @@
 # scRNAseq_code_for_R
 Single-cell analysis of ER+ breast cancer PDX models
 
-# Data and package loading
+#Data and package loading
+
 setwd("~/Documents/COH_2018-2020/SC31/SC31_scRNAseq_2020")
 
 setwd("~/Documents/COH_2018-2020/GS3_scRNA_2019_2020/GS3_intagration")
 
 library(Seurat)
+
 library(dplyr)
+
 library(ggplot2)
 
-# SC31
+#SC31
+
 data <- readRDS("scRNA_human_phase0.3.rds")
-# GS3 
+
+#GS3 
+
 data <- readRDS("GS3_integrated.rds")
 
 #
 PDX <- data
 remove(data)
 
-# without_integration
+#without_integration
+
 DefaultAssay(PDX) <- "RNA"
 
-# integration
+#integration
+
 DefaultAssay(PDX) <- "integrated"
 
-# reset
+#reset
+
 Idents(PDX) <- "seurat_clusters"
 
 
-# Number of cells including the data set
+#Number of cells including the data set
+
 stat <- as.data.frame(table(PDX@active.ident, PDX@meta.data$Phase, PDX@meta.data$orig.ident))
 colnames(stat) <- c("Cluster", "CellCycle", "Treatment", "CellNumber")
 write.csv(stat, "072219.csv")
@@ -46,12 +56,14 @@ UMAPPlot(PDX, group.by="orig.ident",cols=c("#0066FF", "#FF99FF"), pt.size=0.1, s
 UMAPPlot(PDX, group.by="Phase", pt.size=0.1, split.by="orig.ident")+ggtitle("Cell cycle")
 
 # Analysis_2
-###Cell_Number
+#Cell_Number
+
 stat <- as.data.frame(table(PDX@active.ident, PDX@meta.data$Phase, PDX@meta.data$orig.ident))
 colnames(stat) <- c("Cluster", "CellCycle", "Treatment", "CellNumber")
 write.csv(stat, "SC31_06082021_8Cluster.csv")
 
-# bar_Graph
+#bar_Graph
+
 stat <- as.data.frame(table(PDX@meta.data$Phase, PDX@meta.data$orig.ident))
 colnames(stat) <- c("Phase", "Treatment", "Frequency")
 
@@ -119,12 +131,14 @@ g5
 #If I need to check original RNA
 DefaultAssay(PDX) <- "RNA"
 
-# find all markers of cluster X
+#find all markers of cluster X
+
 cluster0.markers <- FindMarkers(PDX, ident.1 = 0, min.pct = 0.25)
 head(cluster0.markers, n = 10)
 
-# find markers for every cluster compared to all remaining cells, report only the positive ones
+#find markers for every cluster compared to all remaining cells, report only the positive ones
 #If I need to change >> @active.assay: chr "integrated" to "RNA"
+
 DefaultAssay(PDX) <- "RNA"
 
 #
@@ -170,7 +184,8 @@ Marker <- FindAllMarkers(sub, only.pos = T, min.pct = 0.25)
 UMAPPlot(sub, cols=c("#FF99FF" , "#0066FF"))+ggtitle(paste("C2", "by_treatment", sep="_"))
 write.csv(Marker, paste(7, "C7_placebo_vs_E2.csv", sep=""))
 
-# Heat_Map
+#Heat_Map
+
 #No requested features found in the scale.data slot for the RNA assay.
 PDX <- ScaleData(object = PDX, features = rownames(PDX))
 #
@@ -420,9 +435,8 @@ stat <- as.data.frame(table(PDX@meta.data$orig.ident, PDX@meta.data$Phase))
 write.csv(stat, "CellCycle2.csv")
 
 
-
-#######################################
-# Analysis_7_DEG_Analysis
+# Analysis_7
+DEG_Analysis
 
 #E2 vs Placebo
 
