@@ -48,11 +48,15 @@ write.csv(stat, "SC31_05032021.csv")
 
 # Analysis_1
 UMAPPlot(PDX, pt.size=0.1)+ggtitle("Clusters")
+
 UMAPPlot(PDX, group.by="orig.ident",cols=c("#0066FF", "#FF99FF"), pt.size=0.1)+ggtitle("Treatment")
+
 UMAPPlot(PDX, group.by="Phase", pt.size=0.1)+ggtitle("Cell cycle")
 
 UMAPPlot(PDX, pt.size=0.1, split.by="orig.ident")+ggtitle("Clusters")
+
 UMAPPlot(PDX, group.by="orig.ident",cols=c("#0066FF", "#FF99FF"), pt.size=0.1, split.by="orig.ident")+ggtitle("Treatment")
+
 UMAPPlot(PDX, group.by="Phase", pt.size=0.1, split.by="orig.ident")+ggtitle("Cell cycle")
 
 # Analysis_2
