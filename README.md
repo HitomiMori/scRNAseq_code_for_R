@@ -13,7 +13,6 @@ library(ggplot2)
 data <- readRDS("scRNA_human_phase0.3.rds")
 #GS3 
 data <- readRDS("GS3_integrated.rds")
-
 #
 PDX <- data
 remove(data)
