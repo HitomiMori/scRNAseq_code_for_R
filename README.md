@@ -133,10 +133,13 @@ top10.PDX.markers <- PDX.markers %>% group_by(cluster) %>% top_n(10, avg_logFC)
 bottom10.PDX.markers <- PDX.markers %>% group_by(cluster) %>% top_n(-10, avg_logFC)
 
 #GS3
+
 write.csv(PDX.markers, "GS3_intergrate_8_RNA_DEG.csv")
 write.csv(top10.PDX.markers, file = "top10_GS3_intergrate_8_DEG.csv")
 write.csv(bottom10.PDX.markers, file = "bot10_GS3_intergrate_8_DEG.csv")
+
 #SC31
+
 write.csv(PDX.markers, "SC31_DEG_8_RNA.csv")
 write.csv(top10.PDX.markers, file = "top10_SC31_DEG_8_RNA.csv")
 write.csv(bottom10.PDX.markers, file = "bot20_SC31_DEG_8_RNA.csv")
@@ -144,6 +147,7 @@ write.csv(bottom10.PDX.markers, file = "bot20_SC31_DEG_8_RNA.csv")
 #In Cx_DEG_Placebo_vs_E2
 
 #GS3
+
 DefaultAssay(PDX) <- "RNA"
 Idents(PDX) <- "seurat_clusters"
 UMAPPlot(PDX)
@@ -155,6 +159,7 @@ UMAPPlot(sub, cols=c("#0066FF", "#FF99FF"))+ggtitle(paste("C3", "by_treatment", 
 write.csv(Marker, paste(7, "C7_placebo_vs_E2.csv", sep=""))
 
 #SC31
+
 DefaultAssay(PDX) <- "RNA"
 Idents(PDX) <- "seurat_clusters"
 UMAPPlot(PDX)
