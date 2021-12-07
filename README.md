@@ -2,7 +2,9 @@
 Single-cell analysis of ER+ breast cancer PDX models
 
 ####Data and package loading
+
 setwd("~/Documents/COH_2018-2020/SC31/SC31_scRNAseq_2020")
+
 setwd("~/Documents/COH_2018-2020/GS3_scRNA_2019_2020/GS3_intagration")
 
 library(Seurat)
@@ -11,16 +13,20 @@ library(ggplot2)
 
 #SC31
 data <- readRDS("scRNA_human_phase0.3.rds")
+
 #GS3 
 data <- readRDS("GS3_integrated.rds")
+
 #
 PDX <- data
 remove(data)
 
 #without_integration
 DefaultAssay(PDX) <- "RNA"
+
 #integration
 DefaultAssay(PDX) <- "integrated"
+
 #reset
 Idents(PDX) <- "seurat_clusters"
 
