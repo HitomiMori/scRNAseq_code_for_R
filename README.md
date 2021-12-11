@@ -129,6 +129,65 @@ g5 <- ggplot(data=stat, aes(x=Cluster, y=Frequency, fill=Phase)) +
   facet_grid( ~ Treatment)
 g5
 
+#Gene2 in Gene (MKI67+/- cells in IL24+ cells)
+Gene2 <- "MKI67"
+sample.info <- data.frame(row.names = attr(sub@active.ident, 'names'))
+indexGene <- match(Gene2, rownames(sub@assays$RNA@counts))
+sample.info$Gene2 = 'Neg'
+sample.info$Gene2[which(sub@assays$RNA@counts[rownames(sub@assays$RNA@counts)[indexGene], ] != 0)] <- 'Pos'
+sub <- AddMetaData(object = sub, metadata = sample.info)
+
+UMAPPlot(sub, group.by="Gene2",cols = c("#d9d9d9", "#fb8072"))+ggtitle(Gene2) 
+
+stat <- as.data.frame(table(sub@active.ident, sub@meta.data$orig.ident, sub@meta.data$Gene2))
+colnames(stat) <- c("Cluster", "Treatment", "Expression", "Frequency")
+
+g6 <- ggplot(data=stat, aes(x=Cluster, y=Frequency, fill=Expression)) +
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ggtitle(paste(Gene2, "Percentage_by_cluster+Treatment", sep="_"))+
+  facet_grid( ~ Treatment)+
+  scale_fill_brewer(palette="Dark2")
+g6
+
+#
+#Cell cycle of MKI67+/- cells in IL24+ cells
+Idents(sub) <- "Gene2"
+sub2 <- subset(sub, idents = "Pos") 
+UMAPPlot(sub2,cols = "tomato")+ggtitle("MKI67+ in IL24+")
+
+Idents(sub) <- "Gene2"
+sub3 <- subset(sub, idents = "Neg") 
+UMAPPlot(sub3,cols = "gray")+ggtitle("MKI67- in IL24+")
+
+Idents(sub2) <- "seurat_clusters"
+UMAPPlot(sub2)+ggtitle("MKI67+ in IL24+_Clusters")
+UMAPPlot(sub2, split.by="orig.ident")+ggtitle("MKI67+ in IL24+_Clusters")
+
+stat <- as.data.frame(table(sub2@active.ident, sub2@meta.data$orig.ident, sub2@meta.data$Phase))
+colnames(stat) <- c("Cluster", "Treatment", "Phase", "Frequency")
+
+g7 <- ggplot(data=stat, aes(x=Cluster, y=Frequency, fill=Phase)) +
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ggtitle(paste(Gene2, "Percentage_by_cluster+Treatment", sep="_"))+
+  facet_grid( ~ Treatment)
+g7
+
+
+Idents(sub3) <- "seurat_clusters"
+UMAPPlot(sub3)+ggtitle("MKI67- in IL24+_Clusters")
+UMAPPlot(sub3, split.by="orig.ident")+ggtitle("MKI67- in IL24+_Clusters")
+
+stat <- as.data.frame(table(sub3@active.ident, sub3@meta.data$orig.ident, sub3@meta.data$Phase))
+colnames(stat) <- c("Cluster", "Treatment", "Phase", "Frequency")
+
+g8 <- ggplot(data=stat, aes(x=Cluster, y=Frequency, fill=Phase)) +
+  geom_bar(stat="identity")+
+  theme_minimal()+
+  ggtitle(paste(Gene2, "Percentage_by_cluster+Treatment", sep="_"))+ 
+  facet_grid( ~ Treatment)
+g8
 
 # Analysis_3
 #Finding differentially expressed features (cluster biomarkers)#########
